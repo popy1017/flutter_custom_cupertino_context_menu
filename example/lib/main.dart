@@ -1,57 +1,107 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:custom_cupertino_context_menu/custom_cupertino_context_menu.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await CustomCupertinoContextMenu.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  final List<Widget> _actions = [
+    CupertinoContextMenuAction(child: Text('AAA')),
+    CupertinoContextMenuAction(child: Text('BBB')),
+    CupertinoContextMenuAction(child: Text('CCC')),
+    CupertinoContextMenuAction(child: Text('DDD')),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget _officialCuperTinoContextMenu = Column(
+      children: [
+        Text(
+          'CuperTinoContextMenu',
+          style: TextStyle(fontSize: 20),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        CupertinoContextMenu(
+          actions: _actions,
+          child: TappablePhoto(
+            onTap: () => _moveToNewPage(context),
+          ),
         ),
+      ],
+    );
+    final Widget _customCupertinoContextMenu = Column(
+      children: [
+        Text(
+          'Custom CuperTinoContextMenu',
+          style: TextStyle(fontSize: 20),
+        ),
+        CustomCupertinoContextMenu(
+          actions: _actions,
+          child: TappablePhoto(
+            onTap: () => _moveToNewPage(context),
+          ),
+        ),
+      ],
+    );
+
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _officialCuperTinoContextMenu,
+            _customCupertinoContextMenu,
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _moveToNewPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(),
+          body: Center(
+            child: ColorFiltered(
+              colorFilter: ColorFilter.mode(Colors.green, BlendMode.colorBurn),
+              child: Image.asset('lib/lena.png'),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class TappablePhoto extends StatelessWidget {
+  TappablePhoto({this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Image.asset('lib/lena.png', width: 200),
       ),
     );
   }
