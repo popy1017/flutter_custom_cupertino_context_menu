@@ -82,7 +82,7 @@ class MyHomePage extends StatelessWidget {
           body: Center(
             child: ColorFiltered(
               colorFilter: ColorFilter.mode(Colors.green, BlendMode.colorBurn),
-              child: Image.asset('lib/lena.png'),
+              child: FlutterLogo(),
             ),
           ),
         );
@@ -92,7 +92,7 @@ class MyHomePage extends StatelessWidget {
 }
 
 class TappablePhoto extends StatelessWidget {
-  TappablePhoto({this.onTap});
+  TappablePhoto({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -101,7 +101,7 @@ class TappablePhoto extends StatelessWidget {
     return Container(
       child: GestureDetector(
         onTap: onTap,
-        child: Image.asset('lib/lena.png', width: 200),
+        child: FlutterLogo(),
       ),
     );
   }
