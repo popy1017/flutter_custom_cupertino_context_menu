@@ -540,7 +540,10 @@ class _DecoyChildState extends State<_DecoyChild>
             colors: <Color>[color, color],
           ).createShader(bounds);
         },
-        child: widget.child,
+        child: AbsorbPointer(
+          child: widget.child,
+          absorbing: widget.absorbing,
+        ),
       ),
     );
   }
@@ -857,6 +860,7 @@ class _ContextMenuRoute<T> extends PopupRoute<T> {
           onDismiss: _onDismiss,
           orientation: orientation,
           sheetGlobalKey: _sheetGlobalKey,
+          absorbing: absorbing,
         );
       },
     );
@@ -875,6 +879,7 @@ class _ContextMenuRouteStatic extends StatefulWidget {
     this.onDismiss,
     required this.orientation,
     this.sheetGlobalKey,
+    this.absorbing = true,
   })  : assert(contextMenuLocation != null),
         assert(orientation != null),
         super(key: key);
@@ -886,6 +891,7 @@ class _ContextMenuRouteStatic extends StatefulWidget {
   final _DismissCallback? onDismiss;
   final Orientation orientation;
   final GlobalKey? sheetGlobalKey;
+  final bool absorbing;
 
   @override
   _ContextMenuRouteStaticState createState() => _ContextMenuRouteStaticState();
@@ -1060,7 +1066,10 @@ class _ContextMenuRouteStaticState extends State<_ContextMenuRouteStatic>
         child: AnimatedBuilder(
           animation: _moveController,
           builder: _buildChildAnimation,
-          child: widget.child,
+          child: AbsorbPointer(
+            child: widget.child,
+            absorbing: widget.absorbing,
+          ),
         ),
       ),
     );
